@@ -18,13 +18,20 @@ public class TestActiviti {
 	@Test
 	public void createTable() {
 		
+		/*
+		   创建，读取流程引擎配置的配置信息的其他方式
+		ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault();
+		ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(String resource);
+		ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(String resource, String beanName);
+		ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(InputStream inputStream);
+		ProcessEngineConfiguration.createProcessEngineConfigurationFromInputStream(InputStream inputStream, String beanName);
+		  */
 	ProcessEngineConfiguration configuration = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration();
 	configuration.setJdbcDriver("com.mysql.jdbc.Driver");
 	configuration.setJdbcUrl("jdbc:mysql://localhost:3306/activiti?createDatabaseIfNotExist=true&characterEncoding=utf-8");
 	configuration.setJdbcUsername("root");
 	configuration.setJdbcPassword("root");
 	configuration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
-	
 	ProcessEngine processEngine = configuration.buildProcessEngine();
 	System.out.println(processEngine);
 	}

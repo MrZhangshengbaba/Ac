@@ -10,9 +10,57 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 	<bean id="processEngineConfiguration"
 		class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
 		<property name="jdbcDriver" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/activiti?createDatabaseIfNotExist=true&amp;characterEncoding=utf-8" />
+		<property name="jdbcUrl"
+			value="jdbc:mysql://localhost:3306/activiti?createDatabaseIfNotExist=true&amp;characterEncoding=utf-8" />
 		<property name="jdbcUsername" value="root" />
 		<property name="jdbcPassword" value="root" />
 		<property name="databaseSchemaUpdate" value="true"></property>
+
+		<!-- ==================================================================================== -->
+
+		<!-- <property name="asyncExecutorActivate" value="false" /> -->
+
+		<!-- <property name="mailServerHost" value="mail.my-corp.com" />
+		<property name="mailServerPort" value="5025" />
+		<property name="processDefinitionCacheLimit" value="10" /> -->
 	</bean>
+
+	<!-- 添加到.bpmn.xml文件中 -->
+	<!-- 下面的代码片段将两个侦听器添加到一个流程定义中。 第一个侦听器将接收任何类型的事件，并基于一个完全限定的类名进行侦听器实现。 第二个侦听器只在任务成功执行或失败时通知，使用在流程引擎配置的bean属性中定义的侦听器。 -->
+	<!-- <process id="testEventListeners1">
+		<extensionElements>
+			<activiti:eventListener class="org.activiti.engine.test.MyEventListener" />
+				第一个监听器
+			<activiti:eventListener delegateExpression="${testEventListener}"
+				events="JOB_EXECUTION_SUCCESS,JOB_EXECUTION_FAILURE" />         第二个监听器
+		</extensionElements>
+	</process> -->
+	<!-- 对于与实体相关的事件，也可以将侦听器添加到一个流程定义中，该流程定义只在特定实体类型发生实体事件时得到通知。下面的代码片段展示了如何实现这一点。它可以用于所有实体事件(第一个示例)或仅用于特定事件类型(第二个示例)。 -->
+	<!-- <process id="testEventListeners2">
+		<extensionElements>
+			<activiti:eventListener class="org.activiti.engine.test.MyEventListener"
+				entityType="task" />用于所有实体事件(第一个示例)
+			<activiti:eventListener delegateExpression="${testEventListener}"
+				events="ENTITY_CREATED" entityType="task" /> 仅用于特定事件类型(第二个示例)
+		</extensionElements>
+ -->
+		<!-- ps：entityType支持值 attachment, comment, execution, identity-link, job, 
+			process-instance, process-definition, task. -->
+
+	<!-- </process> -->
+
+	<!-- <process id="testEventListeners3">
+		<extensionElements>
+			<activiti:eventListener throwEvent="signal"
+				signalName="My signal" events="TASK_ASSIGNED" />
+			<activiti:eventListener throwEvent="globalSignal"
+				signalName="My signal" events="TASK_ASSIGNED" />
+			<activiti:eventListener throwEvent="message"
+				messageName="My message" events="TASK_ASSIGNED" />
+			<activiti:eventListener throwEvent="error"
+				errorCode="123" events="TASK_ASSIGNED" />
+		</extensionElements>
+	</process> -->
+
+
 </beans>

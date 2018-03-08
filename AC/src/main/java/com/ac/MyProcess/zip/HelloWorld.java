@@ -1,10 +1,15 @@
 package com.ac.MyProcess.zip;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -16,9 +21,15 @@ import org.junit.Test;
 *下午2:03:19
 */
 public class HelloWorld {
-	
+	//ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault();
 	ProcessEngine defaultProcessEngine = ProcessEngines.getDefaultProcessEngine();
+	ProcessEngine a = new ProcessEngineImpl(null);
 	
+	ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration()
+			  .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
+			  .setJdbcUrl("jdbc:h2:mem:my-own-db;DB_CLOSE_DELAY=1000")
+			  .setJobExecutorActivate(false)
+			  .buildProcessEngine();
 	/**
 	 * 部署流程定义
 	 * */
