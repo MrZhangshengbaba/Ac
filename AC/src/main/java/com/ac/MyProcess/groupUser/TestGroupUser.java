@@ -11,6 +11,7 @@ import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.junit.Test;
 
@@ -68,32 +69,48 @@ public class TestGroupUser {
 		System.out.println("流程定义id:" + startProcessInstanceByKey.getProcessDefinitionId());// 流程定义id
 	}
 
-	/**
-	 * 查询当前人的个人任务
-	 * 
-	 */
-
-	@Test
-	public void findMyPersontask() {
-		String assignee = "王五";
-		List<Task> list = defaultProcessEngine.getTaskService()// 与正在执行的任务相关的 表act_ru_task
+	//查询组任务列表
+		@Test
+		public void findGroupList(){
+			String userId = "张大大";//小张，小李可以查询结果，小王不可以，因为他不是部门经理
+			List<Task> list = defaultProcessEngine.getTaskService()//
+			                .createTaskQuery()//
+			                .taskCandidateUser(userId)//指定组任务查询
+			                .list();
+			for(Task task:list ){
+				System.out.println("id="+task.getId());
+				System.out.println("name="+task.getName());
+				System.out.println("assinee="+task.getAssignee());
+				System.out.println("assinee="+task.getCreateTime());
+				System.out.println("executionId="+task.getExecutionId());
+				System.out.println("##################################");
 				
-				.createTaskQuery() // 创建任务查询对象
-				.taskAssignee(assignee) // 指定个人任务查询，指定班里人
-				.list();
-		if (list != null && list.size() > 0) {
-			for (Task task : list) {
-				System.out.println("任务id:" + task.getId());
-				System.out.println("任务名称:" + task.getName());
-				System.out.println("任务的创建时间:" + task.getCreateTime());
-				System.out.println("任务办理人:" + task.getAssignee());
-				System.out.println("流程实例id:" + task.getProcessInstanceId());
-				System.out.println("执行对象id:" + task.getExecutionId());
-				System.out.println("流程定义id:" + task.getProcessDefinitionId());
-				System.out.println("##########################################################");
 			}
 		}
-	}
+		
+		//查询组任务成员列表
+		@Test
+		public void findGroupUser(){
+			String taskId = "4408";
+			List<IdentityLink> list = defaultProcessEngine.getTaskService()//
+			                .getIdentityLinksForTask(taskId);
+			for(IdentityLink identityLink:list ){
+				System.out.println("userId="+identityLink.getUserId());
+				System.out.println("taskId="+identityLink.getTaskId());
+				System.out.println("piId="+identityLink.getProcessInstanceId());
+				System.out.println("######################");
+			}
+		}
+		
+		//完成任务
+		@Test
+		public void completeTask(){
+			String taskId = "5108";
+			defaultProcessEngine.getTaskService()//
+						.complete(taskId);//
+			System.out.println("完成任务");
+		}
+	
 
 	/**
 	 * 完成我的任务
