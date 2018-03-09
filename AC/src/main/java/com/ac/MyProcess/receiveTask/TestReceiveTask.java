@@ -47,7 +47,7 @@ public class TestReceiveTask {
 	 */
 	@Test
 	public void deleteMentProcessDefinition_InputStream() {
-		String id = "3501";
+		String id = "4601";
 		defaultProcessEngine.getRepositoryService() // 与流程定义和对象部署相关的service
 				.deleteDeployment(id);
 		System.out.println("删除流程实例id:" + id);
@@ -56,6 +56,7 @@ public class TestReceiveTask {
 	/**
 	 * 启动流程实例
 	 */
+	@SuppressWarnings("unused")
 	@Test
 	public void startProcessInstsnce() {
 		String key = "receiveTask";
@@ -70,24 +71,43 @@ public class TestReceiveTask {
 		Execution execution = defaultProcessEngine.getRuntimeService()
 		.createExecutionQuery()
 		.processInstanceId(processinstance.getId())
-		.activityId("servicetask1")
+		.activityId("receivetask1")
 		.singleResult();
+		System.out.println("执行对象ID:"+execution.getId());
 		/*使用流程变量设置当日销售额，用来传递业务参数*/
-		defaultProcessEngine.getRuntimeService().setVariable(execution.getId(), "汇总当日销售额",21000);
+		defaultProcessEngine.getRuntimeService().setVariable(execution.getId(), "当日销售额",21000);
 		/*向后执行一步*/
 		defaultProcessEngine.getRuntimeService().signal(execution.getId());
 		
-		
+/*		=================================================*/
 		Execution execution1 = defaultProcessEngine.getRuntimeService()
 				.createExecutionQuery()
 				.processInstanceId(processinstance.getId())
-				.activityId("servicetask1")
+				.activityId("receivetask2")
 				.singleResult();
 		/*使用流程变量设置当日销售额，用来传递业务参数*/
-		defaultProcessEngine.getRuntimeService().setVariable(execution1.getId(), "给老板发送短信","已汇总");
+		Integer value = (Integer) defaultProcessEngine.getRuntimeService().getVariable(execution1.getId(), "当日销售额");
 		/*向后执行一步*/
 		defaultProcessEngine.getRuntimeService().signal(execution1.getId());
-				
+		 System.out.println("给老板发送短信：内容，当日销售额："+value);  
+         
+	     System.out.println("########################"+execution1.getId());
+	     System.out.println("判断是流程是否结束——————————开始");
+	        //9.判断流程是否结束  
+	        ProcessInstance nowPi = defaultProcessEngine.getRuntimeService()  
+	                .createProcessInstanceQuery()
+	                
+	                .processInstanceId(processinstance.getId()) 
+	                
+	                .singleResult();  
+	        
+	       // System.out.println(nowPi+""+nowPi.getId());
+	        if(nowPi == null){  
+	            System.out.println("流程结束");  
+	        } 
+	        
+	        System.out.println("判断是流程是否结束——————————结束");
+	    }  	
 		
-	}
+	
 }
